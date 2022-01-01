@@ -9,10 +9,23 @@ calculate.addEventListener("click", function () {
   if (dobVal.length != 3 || currDateVal.length != 3) {
     alert("Please Enter Valid Dates");
     return;
-  }
-  if (currDateVal[0] - dobVal[0] < 0) {
-    alert("Please Enter Valid birth-year");
-  }
+  } 
+ 
+ dobVal = dobVal.map((ele) => Number.parseInt(ele));
+ currDateVal = currDateVal.map((ele) => Number.parseInt(ele));
+  
+if (
+  dobVal[0] > currDateVal[0] ||
+  (dobVal[0] == currDateVal[0] && dobVal[1] > currDateVal[1]) ||
+  (dobVal[0] == currDateVal[0] &&
+    dobVal[1] == currDateVal[1] &&
+    dobVal[2] > currDateVal[2])
+) {
+  setTimeout(() => {
+    alert("Please enter valid birth date.");
+  }, 1);
+  return;
+}
   let year = currDateVal[0];
   if (
     (year % 4 == 0 && year % 100 != 0) ||
@@ -22,15 +35,16 @@ calculate.addEventListener("click", function () {
   } else {
     months[1] = 28;
   }
+  
+  
   let years =
-    currDateVal[1] - dobVal[1] >= 0
-      ? currDateVal[0] - dobVal[0]
-      : currDateVal[0] - dobVal[0] - 1;
-  let month = (currDateVal[1] - dobVal[1] + 12) % 12;
+    currDateVal[1] < dobVal[1] || (dobVal[1] == currDateVal[1] && currDateVal[2] < dobVal[2])
+    ? currDateVal[0] - dobVal[0] - 1
+    : currDateVal[0] - dobVal[0];
+  let month = dobVal[2] > currDateVal[2]
+    ? (12 - dobVal[1] + currDateVal[1] + 11) % 12
+    : (12 - dobVal[1] + currDateVal[1]) % 12;
   let day =
-    (months[Number.parseInt(dobVal[1]) - 1] -
-      Number.parseInt(dobVal[2]) +
-      Number.parseInt(currDateVal[2])) %
-    months[Number.parseInt(currDateVal[1] - 1)];
+    (months[dobVal[1] - 1] - dobVal[2] + currDateVal[2]) % months[dobVal[1] - 1];
   result.innerHTML = `Year:${years} Month:${month} Day:${day}`;
 });
